@@ -1,9 +1,7 @@
 import { Request, Response } from 'express';
 
-import { ordersService } from '../service/orders.service';
+import { ordersService } from '../service/';
 
 export async function ordersCreateAction(req: Request, res: Response) {
-  await ordersService.create();
-
-  return res.status(200).json({ status: 'ok' });
+  return res.status(200).json({ order: await ordersService.create() });
 }

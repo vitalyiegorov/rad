@@ -1,8 +1,7 @@
 import { Request, Response } from 'express';
-import { getRepository } from 'typeorm';
 
-import { Order } from '../entity/order';
+import { ordersService } from '../service/';
 
-export function ordersCancelAction(req: Request, res: Response) {
-  return res.json(getRepository(Order).find());
+export async function ordersCancelAction(req: Request, res: Response) {
+  return res.json(await ordersService.cancel(req.params.id));
 }
