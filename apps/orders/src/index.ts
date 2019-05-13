@@ -7,8 +7,8 @@ import { config } from 'dotenv';
 import 'module-alias/register';
 
 import { startOrm } from './orm';
-import routes from './routes';
 import { startQueue } from './amqp';
+import routes from './routes';
 
 config({ path: resolve(__dirname, '../../../../.env') });
 

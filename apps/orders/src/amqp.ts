@@ -24,7 +24,7 @@ export const startQueue = async () => {
 };
 
 export const sendMessage = async (message, options?) => {
-  console.log(`Sending messages ${message}`);
+  console.log(`Sending message ${message}`);
   const msg = new Message(message, options);
   exchange.send(msg);
 };
