@@ -8,22 +8,12 @@ import 'module-alias/register';
 
 import { startOrm } from './orm';
 import routes from './routes';
-import { startRabbitMQ } from './rabbitmq';
+import { startQueue } from './amqp';
 
 config({ path: resolve(__dirname, '../../../../.env') });
 
+startQueue().catch(console.error);
 startOrm().catch(console.error);
-startRabbitMQ().catch(console.error);
-
-process.on('uncaughtException', e => {
-  console.log(e);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', e => {
-  console.log(e);
-  process.exit(1);
-});
 
 const app = express();
 

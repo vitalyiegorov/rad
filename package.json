@@ -7,14 +7,14 @@
     "build:orders": "tsc -p ./apps/orders/tsconfig.app.json",
     "build:payments": "tsc -p ./apps/payments/tsconfig.app.json",
     "build": "npm run build:orders && npm run build:payments",
-    "start:orders": "node dist/apps/orders/src/index.js",
-    "start:payments": "node dist/apps/payments/src/index.js",
+    "start:orders": "sleep 2 && node dist/apps/orders/src/index.js",
+    "start:payments": "sleep 2 && node dist/apps/payments/src/index.js",
     "run:orders": "npm run build:orders && npm run start:orders",
     "run:payments": "npm run build:payments && npm run start:payments",
     "test": "jest --watch",
     "coverage": "jest --coverage",
     "dev:orders": "tsc-watch -p ./apps/orders/tsconfig.app.json --onSuccess \"npm run start:orders\"",
-    "dev:payments": "tsc-watch --onSuccess \"npm run start:payments\""
+    "dev:payments": "tsc-watch -p ./apps/payments/tsconfig.app.json --onSuccess \"npm run start:payments\""
   },
   "author": "",
   "license": "ISC",
@@ -50,6 +50,7 @@
     "typescript": "^3.4.5"
   },
   "dependencies": {
+    "amqp-ts": "^1.4.0",
     "amqplib": "^0.5.3",
     "body-parser": "^1.19.0",
     "class-validator": "^0.9.1",

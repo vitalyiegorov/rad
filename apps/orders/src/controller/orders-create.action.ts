@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 
 import { Order } from '../entity/order';
+import { sendMessage } from '../amqp';
 
 export async function ordersCreateAction(req: Request, res: Response) {
   const repository = getRepository(Order);
@@ -12,6 +13,8 @@ export async function ordersCreateAction(req: Request, res: Response) {
   order = await repository.save(order);
 
   console.log(`Created order#${order.id}`);
+
+  sendMessage({ id: order.id, order });
 
   return res.status(200).json({ status: 'ok' });
 }

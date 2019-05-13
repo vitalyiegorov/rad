@@ -15,5 +15,5 @@ export const startOrm = async () => {
     entities: [Order]
   };
 
-  await createConnection(options as MysqlConnectionOptions);
+  return await createConnection(options as MysqlConnectionOptions);
 };
