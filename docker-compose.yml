@@ -1,0 +1,55 @@
+version: '3.5'
+services:
+  mysql:
+    image: mysql:5.7
+    container_name: service_mysql
+    hostname: mysql
+    volumes:
+      - ~/datadir/mysql:/var/lib/mysql
+    ports:
+      - 3307:3306
+      - 33070:33060
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    networks:
+      - service_network
+
+  orders_api:
+    container_name: orders_api
+    build:
+      context: .
+      dockerfile: ./apps/orders/Dockerfile
+    image: orders_api
+    volumes:
+      - /node_modules
+    ports:
+      - 3001:3001
+      - 9230:9229
+    depends_on:
+      - mysql
+      - zookeeper
+      - kafka
+    networks:
+      - service_network
+
+  payments_api:
+    container_name: payments_api
+    build:
+      context: .
+      dockerfile: ./apps/payments/Dockerfile
+    image: payments_api
+    volumes:
+      - /node_modules
+    ports:
+      - 3002:3002
+      - 9231:9229
+    depends_on:
+      - zookeeper
+      - kafka
+    networks:
+      - service_network
+
+networks:
+  service_network:
+    driver: bridge
+    name: service_network
