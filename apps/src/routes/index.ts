@@ -1,8 +1,8 @@
 import { Router } from 'express';
 
-import { ordersCreateAction } from '../action/orders-create.action';
-import { ordersCancelAction } from '../action/orders-cancel.action';
-import { ordersStatusAction } from '../action/orders-status.action';
+import { ordersCreateAction } from '../controller/orders-create.action';
+import { ordersCancelAction } from '../controller/orders-cancel.action';
+import { ordersStatusAction } from '../controller/orders-status.action';
 
 const router = Router();
 
