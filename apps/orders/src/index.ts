@@ -12,8 +12,8 @@ config({ path: resolve(__dirname, '../../../../.env') });
 const init = async () => {
   await startQueue().catch(console.error);
   await startOrm().catch(console.error);
-  await startContainer();
-  await startServer();
+  await startContainer().catch(console.error);
+  await startServer().catch(console.error);
 };
 
 init();

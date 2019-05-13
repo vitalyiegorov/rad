@@ -1,11 +1,10 @@
-import { getRepository } from 'typeorm';
+import { Repository } from 'typeorm';
 
 import { Order } from '../entity/order';
-import { sendMessage } from '../amqp';
 import { OrderStatusEnum } from '@app/common';
 
 export class OrdersService {
-  constructor(private queueSend = sendMessage, private repository = getRepository(Order)) {}
+  constructor(private queueSend: any, private repository: Repository<Order>) {}
 
   async create() {
     let order = this.repository.create();
