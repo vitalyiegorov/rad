@@ -1,18 +1,11 @@
-import { getRepository, Repository } from 'typeorm';
-import { Exchange } from 'amqp-ts';
+import { getRepository } from 'typeorm';
 
 import { Order } from '../entity/order';
-import { exchange, sendMessage } from '../amqp';
+import { sendMessage } from '../amqp';
 import { OrderStatusEnum } from '@app/common';
 
 export class OrdersService {
-  private queue: Exchange;
-  private repository: Repository<Order>;
-
-  constructor() {
-    this.queue = exchange;
-    this.repository = getRepository(Order);
-  }
+  constructor(private queueSend = sendMessage, private repository = getRepository(Order)) {}
 
   async create() {
     let order = this.repository.create();
@@ -22,7 +15,7 @@ export class OrdersService {
 
     console.log(`Created order#${order.id}`);
 
-    await sendMessage({ id: order.id, order });
+    await this.queueSend({ id: order.id, order });
 
     return order;
   }
