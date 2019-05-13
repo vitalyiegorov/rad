@@ -1,8 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 import { IsNotEmpty } from 'class-validator';
 
-import { OrderStatusEnum } from '../../../../libs/enum/order-status.enum';
-import { OrderStatusType } from '../../../../libs/type/order-status.type';
+import { OrderStatusEnum, OrderStatusType } from '@app/common';
 
 @Entity()
 export class Order {

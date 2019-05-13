@@ -12,25 +12,28 @@
     "run:orders": "npm run build:orders && npm run start:orders",
     "run:payments": "npm run build:payments && npm run start:payments",
     "test": "jest --watch",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "dev:orders": "tsc-watch -p ./apps/orders/tsconfig.app.json --onSuccess \"npm run start:orders\"",
+    "dev:payments": "tsc-watch --onSuccess \"npm run start:payments\""
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@types/amqplib": "^0.5.11",
-    "@types/express": "^4.16.1",
-    "@types/jest": "^24.0.12",
-    "@types/kafkajs": "^1.4.1",
-    "@types/node": "^12.0.0",
     "@types/body-parser": "^1.17.0",
     "@types/cors": "^2.8.5",
     "@types/dotenv": "^6.1.1",
+    "@types/express": "^4.16.1",
     "@types/helmet": "0.0.43",
+    "@types/jest": "^24.0.12",
+    "@types/kafkajs": "^1.4.1",
+    "@types/node": "^12.0.0",
     "backend-tslint-rules": "^1.14.0",
     "eslint-plugin-node": "^9.0.1",
     "eslint-plugin-security": "^1.4.0",
     "husky": "^2.2.0",
     "jest": "^24.8.0",
+    "module-alias": "^2.2.0",
     "nodemon": "^1.19.0",
     "prettier": "1.17.0",
     "pretty-quick": "^1.10.0",
@@ -38,6 +41,7 @@
     "rxjs-tslint-rules": "^4.18.2",
     "ts-jest": "^24.0.2",
     "ts-node": "^8.1.0",
+    "tsc-watch": "^2.1.2",
     "tslint": "~5.11.0",
     "tslint-clean-code": "^0.2.9",
     "tslint-consistent-codestyle": "^1.15.1",
@@ -56,5 +60,8 @@
     "mysql": "^2.17.1",
     "reflect-metadata": "^0.1.13",
     "typeorm": "^0.2.17"
+  },
+  "_moduleAliases": {
+    "@app/common": "dist/libs/common/src/index.js"
   }
 }
