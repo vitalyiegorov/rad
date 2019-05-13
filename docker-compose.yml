@@ -27,8 +27,6 @@ services:
       - 9230:9229
     depends_on:
       - mysql
-      - zookeeper
-      - kafka
     networks:
       - service_network
 
@@ -44,8 +42,7 @@ services:
       - 3002:3002
       - 9231:9229
     depends_on:
-      - zookeeper
-      - kafka
+      - orders_api
     networks:
       - service_network
 
