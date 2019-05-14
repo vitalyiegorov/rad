@@ -29,7 +29,7 @@ describe('Orders service', () => {
     findOneOrFail: findMock
   })))();
 
-  const mockAmqpService = new (jest.fn().mockImplementation(() => ({ sendMessage: jest.fn() })))();
+  const mockAmqpService = new (jest.fn().mockImplementation(() => ({ sendToOrders: jest.fn() })))();
 
   beforeEach(() => {
     ordersService = new OrdersService(mockAmqpService, mockRepository);
@@ -37,7 +37,7 @@ describe('Orders service', () => {
 
   it('should create new Order', async () => {
     expect(await ordersService.create()).toEqual(orderMock);
-    expect(mockAmqpService.sendMessage).toHaveBeenCalledWith({ id: orderMock.id, order: orderMock });
+    expect(mockAmqpService.sendToOrders).toHaveBeenCalledWith({ id: orderMock.id, order: orderMock });
     expect(saveMock).toHaveBeenCalledWith(orderMock);
   });
 

@@ -14,7 +14,7 @@ export class OrdersService {
 
     console.log(`Created order#${order.id}`);
 
-    await this.amqpService.sendMessage({ id: order.id, order });
+    await this.amqpService.sendToOrders({ id: order.id, order });
 
     return order;
   }

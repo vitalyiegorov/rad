@@ -2,9 +2,10 @@ import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateCol
 import { IsNotEmpty } from 'class-validator';
 
 import { OrderStatusEnum, OrderStatusType } from '@app/common';
+import { OrderInterface } from '@app/common';
 
 @Entity()
-export class Order {
+export class Order implements OrderInterface {
   @PrimaryGeneratedColumn()
   id: number;
 
