@@ -14,8 +14,8 @@ export class AmqpService {
     this.ordersQueue = connection.declareQueue(config.ordersQueue);
     this.paymentsQueue = connection.declareQueue(config.paymentsQueue);
 
-    await this.ordersQueue.bind(this.exchange);
-    await this.paymentsQueue.bind(this.exchange);
+    await this.ordersQueue.bind(this.exchange, config.ordersQueue);
+    await this.paymentsQueue.bind(this.exchange, config.paymentsQueue);
 
     return connection.completeConfiguration();
   }

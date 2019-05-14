@@ -6,7 +6,7 @@ import { resolve } from 'path';
 import { config } from 'dotenv';
 import 'module-alias/register';
 
-import { AmqpService, OrderInterface, PaymentStatusEnum } from '@app/common';
+import { AmqpService, OrderMessageInterface, PaymentStatusEnum } from '@app/common';
 
 config({ path: resolve(__dirname, '../../../../.env') });
 
@@ -25,8 +25,7 @@ const init = async () => {
   await amqpService.init();
 
   await amqpService.setOrdersHandlers([
-    async message => {
-      const { id, order }: { id: number; order: OrderInterface } = message;
+    async ({ id, order }: OrderMessageInterface) => {
       console.log(`Payments received message`, order);
       const status = Math.floor(Math.random() * 2) + 1 === 1 ? PaymentStatusEnum.CONFIRMED : PaymentStatusEnum.DECLINED;
       await amqpService.sendToPayments({ id, status });
