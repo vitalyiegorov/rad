@@ -2,9 +2,10 @@ import { Repository } from 'typeorm';
 
 import { Order } from '../entity/order';
 import { OrderStatusEnum } from '@app/common';
+import { AmqpService } from './amqp.service';
 
 export class OrdersService {
-  constructor(private queueSend: any, private repository: Repository<Order>) {}
+  constructor(private amqpService: AmqpService, private repository: Repository<Order>) {}
 
   async create() {
     let order = this.repository.create();
@@ -14,7 +15,7 @@ export class OrdersService {
 
     console.log(`Created order#${order.id}`);
 
-    await this.queueSend({ id: order.id, order });
+    await this.amqpService.sendMessage({ id: order.id, order });
 
     return order;
   }
