@@ -30,27 +30,33 @@ const MockRepository = jest.fn().mockImplementation(() => {
   };
 });
 
+const sendQueue = jest.fn();
+
 const mockRepository = new MockRepository();
 
 describe('Orders service', () => {
   beforeEach(() => {
-    ordersService = new OrdersService(jest.fn(), mockRepository);
+    ordersService = new OrdersService(sendQueue, mockRepository);
   });
 
   it('should create new Order', async () => {
     expect(await ordersService.create()).toEqual(orderMock);
+    expect(sendQueue).toHaveBeenCalledWith({ id: orderMock.id, order: orderMock });
+    expect(saveMock).toHaveBeenCalledWith(orderMock);
   });
 
   it('should cancel CREATED order by id', async () => {
     const order = await ordersService.cancel(orderMock.id);
 
     expect(order.status).toEqual(OrderStatusEnum.CANCELED);
+    expect(saveMock).toHaveBeenCalledWith(orderMock);
   });
 
   it('should cancel CONFIRMED order by id', async () => {
     const order = await ordersService.cancel(orderConfirmedMock.id);
 
     expect(order.status).toEqual(OrderStatusEnum.CANCELED);
+    expect(saveMock).toHaveBeenCalledWith(orderConfirmedMock);
   });
 
   it('should fail canceling order on wrong order status', async () => {
