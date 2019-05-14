@@ -1,5 +1,6 @@
 export const config = {
   exchange: 'exchange',
   ordersQueue: 'orders',
-  paymentsQueue: 'payments'
+  paymentsQueue: 'payments',
+  deliveryQueue: 'delivery'
 };
