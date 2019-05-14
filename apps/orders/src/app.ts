@@ -16,9 +16,11 @@ export class App {
     app.use(json());
   }
 
-  async start() {
+  start(): Application {
     this.app.listen(this.port, () => {
       console.log(`App listening on the port ${this.port}`);
     });
+
+    return this.app;
   }
 }

@@ -1,36 +1,36 @@
 import { OrdersService } from './orders.service';
 import { OrderStatusEnum } from '@app/common';
 
-let ordersService: OrdersService;
-const orderMock = { id: 1, total: 0, user: '', status: OrderStatusEnum.CREATED };
-const orderConfirmedMock = { id: 2, total: 0, user: '', status: OrderStatusEnum.CONFIRMED };
-const orderDeliveredMock = { id: 3, total: 0, user: '', status: OrderStatusEnum.DELIVERED };
-
-const createMock = jest.fn(() => {
-  return orderMock;
-});
-
-const saveMock = jest.fn((dto: any) => {
-  return dto;
-});
-
-const findMock = jest.fn((id: number) => {
-  return {
-    [orderMock.id]: orderMock,
-    [orderConfirmedMock.id]: orderConfirmedMock,
-    [orderDeliveredMock.id]: orderDeliveredMock
-  }[id];
-});
-
-const mockRepository = new (jest.fn().mockImplementation(() => ({
-  create: createMock,
-  save: saveMock,
-  findOneOrFail: findMock
-})))();
-
-const mockAmqpService = new (jest.fn().mockImplementation(() => ({ sendMessage: jest.fn() })))();
-
 describe('Orders service', () => {
+  let ordersService: OrdersService;
+  const orderMock = { id: 1, total: 0, user: '', status: OrderStatusEnum.CREATED };
+  const orderConfirmedMock = { id: 2, total: 0, user: '', status: OrderStatusEnum.CONFIRMED };
+  const orderDeliveredMock = { id: 3, total: 0, user: '', status: OrderStatusEnum.DELIVERED };
+
+  const createMock = jest.fn(() => {
+    return orderMock;
+  });
+
+  const saveMock = jest.fn((dto: any) => {
+    return dto;
+  });
+
+  const findMock = jest.fn((id: number) => {
+    return {
+      [orderMock.id]: orderMock,
+      [orderConfirmedMock.id]: orderConfirmedMock,
+      [orderDeliveredMock.id]: orderDeliveredMock
+    }[id];
+  });
+
+  const mockRepository = new (jest.fn().mockImplementation(() => ({
+    create: createMock,
+    save: saveMock,
+    findOneOrFail: findMock
+  })))();
+
+  const mockAmqpService = new (jest.fn().mockImplementation(() => ({ sendMessage: jest.fn() })))();
+
   beforeEach(() => {
     ordersService = new OrdersService(mockAmqpService, mockRepository);
   });

@@ -10,10 +10,10 @@ import { Router } from 'express';
 
 config({ path: resolve(__dirname, '../../../../.env') });
 
-const init = async () => {
+export const init = async () => {
   await startContainer().catch(console.error);
   const app = new App(express(), [new OrdersController(ordersService, Router())]);
-  await app.start();
+  return app.start();
 };
 
 init();
