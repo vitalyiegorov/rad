@@ -10,7 +10,7 @@ export let amqpService: AmqpService = null;
 export let ormService: OrmService = null;
 
 export const startContainer = async () => {
-  amqpService = new AmqpService();
+  amqpService = new AmqpService(process.env.AMPQ_URL);
   await amqpService.init();
 
   ormService = new OrmService({

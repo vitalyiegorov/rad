@@ -8,8 +8,10 @@ export class AmqpService {
   private paymentsQueue: Queue;
   private deliveryQueue: Queue;
 
+  constructor(private config: string = process.env.AMPQ_URL) {}
+
   async init() {
-    const connection = new Connection(process.env.AMPQ_URL);
+    const connection = new Connection(this.config);
     this.exchange = connection.declareExchange(config.exchange);
 
     this.ordersQueue = connection.declareQueue(config.ordersQueue);

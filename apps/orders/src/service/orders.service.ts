@@ -2,7 +2,6 @@ import { Repository } from 'typeorm';
 
 import { Order } from '../entity/order';
 import { AmqpService, OrderStatusEnum, PaymentStatusEnum, PaymentStatusType } from '@app/common';
-import { amqpService } from './index';
 
 export class OrdersService {
   constructor(private amqpService: AmqpService, private repository: Repository<Order>) {}
@@ -53,7 +52,9 @@ export class OrdersService {
     order.status = status === PaymentStatusEnum.DECLINED ? OrderStatusEnum.CANCELED : OrderStatusEnum.CONFIRMED;
     await this.repository.save(order);
 
-    await amqpService.sendToDelivery({ id: order.id });
+    if (order.status === OrderStatusEnum.CONFIRMED) {
+      await this.amqpService.sendToDelivery({ id: order.id });
+    }
 
     return order;
   }
@@ -61,11 +62,13 @@ export class OrdersService {
   async delivered(id: number) {
     const order = await this.repository.findOneOrFail(id);
 
-    setTimeout(async () => {
-      order.status = OrderStatusEnum.DELIVERED;
-      await this.repository.save(order);
+    await setTimeout(() => {}, Math.floor(Math.random() * 5));
 
-      console.log(`Delivered order#${order.id}`);
-    }, Math.floor(Math.random() * 5));
+    order.status = OrderStatusEnum.DELIVERED;
+    await this.repository.save(order);
+
+    console.log(`Delivered order#${order.id}`);
+
+    return order.status;
   }
 }

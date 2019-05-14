@@ -1,5 +1,5 @@
 import { OrdersService } from './orders.service';
-import { OrderStatusEnum } from '@app/common';
+import { OrderStatusEnum, PaymentStatusEnum } from '@app/common';
 
 describe('Orders service', () => {
   let ordersService: OrdersService;
@@ -17,9 +17,9 @@ describe('Orders service', () => {
 
   const findMock = jest.fn((id: number) => {
     return {
-      [orderMock.id]: orderMock,
-      [orderConfirmedMock.id]: orderConfirmedMock,
-      [orderDeliveredMock.id]: orderDeliveredMock
+      [orderMock.id]: { ...orderMock },
+      [orderConfirmedMock.id]: { ...orderConfirmedMock },
+      [orderDeliveredMock.id]: { ...orderDeliveredMock }
     }[id];
   });
 
@@ -29,7 +29,10 @@ describe('Orders service', () => {
     findOneOrFail: findMock
   })))();
 
-  const mockAmqpService = new (jest.fn().mockImplementation(() => ({ sendToOrders: jest.fn() })))();
+  const mockAmqpService = new (jest.fn().mockImplementation(() => ({
+    sendToOrders: jest.fn(),
+    sendToDelivery: jest.fn()
+  })))();
 
   beforeEach(() => {
     ordersService = new OrdersService(mockAmqpService, mockRepository);
@@ -41,25 +44,50 @@ describe('Orders service', () => {
     expect(saveMock).toHaveBeenCalledWith(orderMock);
   });
 
-  it('should cancel CREATED order by id', async () => {
-    const order = await ordersService.cancel(orderMock.id);
+  describe('Order cancellation', () => {
+    it('should cancel CREATED order by id', async () => {
+      const order = await ordersService.cancel(orderMock.id);
 
-    expect(order.status).toEqual(OrderStatusEnum.CANCELED);
-    expect(saveMock).toHaveBeenCalledWith(orderMock);
-  });
+      expect(order.status).toEqual(OrderStatusEnum.CANCELED);
+      expect(saveMock).toHaveBeenCalledWith(orderMock);
+    });
 
-  it('should cancel CONFIRMED order by id', async () => {
-    const order = await ordersService.cancel(orderConfirmedMock.id);
+    it('should cancel CONFIRMED order by id', async () => {
+      const order = await ordersService.cancel(orderConfirmedMock.id);
 
-    expect(order.status).toEqual(OrderStatusEnum.CANCELED);
-    expect(saveMock).toHaveBeenCalledWith(orderConfirmedMock);
-  });
+      expect(order.status).toEqual(OrderStatusEnum.CANCELED);
+      expect(saveMock).toHaveBeenCalledWith({ ...orderConfirmedMock, status: OrderStatusEnum.CANCELED });
+    });
 
-  it('should fail canceling order on wrong order status', async () => {
-    await expect(ordersService.cancel(orderDeliveredMock.id)).rejects.toThrow(Error);
+    it('should fail canceling order on wrong order status', async () => {
+      await expect(ordersService.cancel(orderDeliveredMock.id)).rejects.toThrow(Error);
+    });
   });
 
   it('should show order status by id', async () => {
     expect(await ordersService.status(orderMock.id)).toEqual(orderMock.status);
+  });
+
+  describe('Order payments', () => {
+    it('should process DECLINED order payment', async () => {
+      const canceled = { ...orderMock, status: OrderStatusEnum.CANCELED };
+      expect(await ordersService.payment(orderMock.id, PaymentStatusEnum.DECLINED)).toEqual(canceled);
+      expect(mockAmqpService.sendToDelivery).not.toHaveBeenCalledWith({ id: orderMock.id });
+    });
+
+    it('should process CONFIRMED order payment', async () => {
+      const confirmed = { ...orderMock, status: OrderStatusEnum.CONFIRMED };
+
+      expect(await ordersService.payment(orderMock.id, PaymentStatusEnum.CONFIRMED)).toEqual(confirmed);
+      expect(mockAmqpService.sendToDelivery).toHaveBeenCalledWith({ id: orderMock.id });
+    });
+
+    it('should throw error for orders with wrong status', async () => {
+      await expect(ordersService.payment(orderConfirmedMock.id, PaymentStatusEnum.DECLINED)).rejects.toThrow(Error);
+    });
+  });
+
+  it('should deliver order', async () => {
+    expect(await ordersService.delivered(orderMock.id)).toEqual(OrderStatusEnum.DELIVERED);
   });
 });

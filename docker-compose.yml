@@ -1,68 +1,53 @@
 version: '3.5'
 services:
   rabbitmq:
+    container_name: rabbitmq
     image: rabbitmq:3
-    hostname: rabbitmq
     ports:
-      - 5673:5672
-    healthcheck:
-      test: ['CMD', 'curl', '-f', 'http://localhost:15672']
-      interval: 30s
-      timeout: 10s
-      retries: 5
+      - 5672:5672
 
   mysql:
+    container_name: mysql
     image: mysql:5.7
-    hostname: mysql
     volumes:
       - ~/datadir/mysql:/var/lib/mysql
     ports:
       - 3307:3306
-      - 33070:33060
     environment:
       MYSQL_ROOT_PASSWORD: root
-    networks:
-      - service_network
 
-#  orders_api:
-#    build:
-#      context: .
-#      dockerfile: ./apps/orders/Dockerfile
-#    command: bash -c "npm run dev:orders"
-#    restart: on-failure
-#    env_file:
-#      - ./.env
-#    volumes:
-#      - /node_modules
-#    ports:
-#      - 3001:3001
-#      - 9230:9229
-#    depends_on:
-#      - rabbitmq
-#      - mysql
-#    links:
-#      - rabbitmq
-#      - mysql
-#    networks:
-#      - service_network
+  orders_api:
+    container_name: orders_api
+    build:
+      context: .
+      dockerfile: ./apps/orders/Dockerfile
+    command: bash -c "sleep 2 && npm run dev:orders"
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    ports:
+      - 3001:3001
+      - 9230:9229
+    depends_on:
+      - rabbitmq
+      - mysql
+    links:
+      - rabbitmq
+      - mysql
 
-#  payments_api:
-#    container_name: payments_api
-#    build:
-#      context: .
-#      dockerfile: ./apps/payments/Dockerfile
-#    image: payments_api
-#    volumes:
-#      - /node_modules
-#    ports:
-#      - 3002:3002
-#      - 9231:9229
-#    depends_on:
-#      - orders_api
-#    networks:
-#      - service_network
-
-networks:
-  service_network:
-    driver: bridge
-    name: service_network
+  payments_api:
+    container_name: payments_api
+    build:
+      context: .
+      dockerfile: ./apps/payments/Dockerfile
+    command: bash -c "sleep 2 && npm run dev:payments"
+    restart: unless-stopped
+    volumes:
+      - ./:/app
+    ports:
+      - 3002:3002
+      - 9231:9229
+    depends_on:
+      - rabbitmq
+    links:
+      - rabbitmq
