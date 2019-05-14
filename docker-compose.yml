@@ -18,9 +18,7 @@ services:
 
   orders_api:
     container_name: orders_api
-    build:
-      context: .
-      dockerfile: ./apps/orders/Dockerfile
+    build: .
     command: bash -c "sleep 2 && npm run dev:orders"
     restart: unless-stopped
     volumes:
@@ -37,9 +35,7 @@ services:
 
   payments_api:
     container_name: payments_api
-    build:
-      context: .
-      dockerfile: ./apps/payments/Dockerfile
+    build: .
     command: bash -c "sleep 2 && npm run dev:payments"
     restart: unless-stopped
     volumes:
