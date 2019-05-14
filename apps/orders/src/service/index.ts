@@ -2,8 +2,8 @@ import { getRepository } from 'typeorm';
 
 import { OrdersService } from './orders.service';
 import { Order } from '../entity/order';
-import { AmqpService } from './amqp.service';
 import { OrmService } from './orm.service';
+import { AmqpService } from '@app/common';
 
 export let ordersService: OrdersService = null;
 export let amqpService: AmqpService = null;

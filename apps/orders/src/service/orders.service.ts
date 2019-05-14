@@ -1,8 +1,7 @@
 import { Repository } from 'typeorm';
 
 import { Order } from '../entity/order';
-import { OrderStatusEnum } from '@app/common';
-import { AmqpService } from './amqp.service';
+import { AmqpService, OrderStatusEnum } from '@app/common';
 
 export class OrdersService {
   constructor(private amqpService: AmqpService, private repository: Repository<Order>) {}

@@ -1,5 +1,7 @@
 export * from './interface/controller.interface';
 
+export * from './service/amqp.service';
+
 export * from './enum/order-status.enum';
 export * from './enum/payment-status.enum';
 

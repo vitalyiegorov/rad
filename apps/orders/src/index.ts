@@ -13,7 +13,7 @@ config({ path: resolve(__dirname, '../../../../.env') });
 export const init = async () => {
   await startContainer().catch(console.error);
   const app = new App(express(), [new OrdersController(ordersService, Router())]);
-  return app.start();
+  app.start();
 };
 
 init();
